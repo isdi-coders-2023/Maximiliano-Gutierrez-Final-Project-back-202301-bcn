@@ -9,7 +9,7 @@
     "build:dev": "npx tsc -w",
     "start": "node dist",
     "start:dev": "node --watch dist",
-    "test": "npx jest",
+    "test": "npx jest --passWithNoTests",
     "test:coverage": "npx jest --coverage --watchAll=false --passWithNoTests",
     "prepare": "husky install"
   },
