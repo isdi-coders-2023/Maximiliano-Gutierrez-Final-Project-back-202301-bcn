@@ -1,9 +1,9 @@
-import "../loadEnvironments.js";
+import "../loadEnvironment.js";
 import createDebug from "debug";
 import { app } from "./index.js";
 import { type CustomError } from "../CustomError/CustomError.js";
 
-const debug = createDebug("techno:startServer");
+const debug = createDebug("techno-api:root");
 
 const startServer = async (port: number) =>
   new Promise((resolve, reject) => {
