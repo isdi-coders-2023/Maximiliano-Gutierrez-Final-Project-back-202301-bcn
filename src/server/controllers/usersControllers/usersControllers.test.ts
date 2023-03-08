@@ -1,11 +1,11 @@
 import { type NextFunction, type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import User from "../../database/models/User.js";
-import { loginUser } from "./usersControllers.js";
-import { CustomError } from "../../CustomError/CustomError.js";
+import bcrypt from "bcryptjs";
+import User from "../../../database/models/User";
+import { loginUser } from "./usersControllers";
+import { CustomError } from "../../../CustomError/CustomError";
 import mongoose from "mongoose";
-import { type UserCredentials } from "../../server/types.js";
+import { type UserCredentials } from "../../types";
 
 const res = {
   status: jest.fn().mockReturnThis(),
