@@ -2,13 +2,13 @@ import { type NextFunction, type Request, type Response } from "express";
 import { CustomError } from "../../../CustomError/CustomError";
 import { generalError, notFoundError } from "./errorMiddlewares";
 
-const res = {
+const res: Partial<Response> = {
   status: jest.fn().mockReturnThis(),
   json: jest.fn(),
-} as Partial<Response>;
+};
 
-const req = {} as Request;
-const next = jest.fn() as NextFunction;
+const req: Partial<Request> = {};
+const next: NextFunction = jest.fn();
 
 beforeEach(() => jest.clearAllMocks());
 
@@ -22,7 +22,7 @@ describe("Given a generalError middleware", () => {
         "Something went wrong"
       );
 
-      generalError(error, req, res as Response, next);
+      generalError(error, req as Request, res as Response, next);
 
       expect(res.status).toHaveBeenCalledWith(statusCode);
     });
@@ -31,7 +31,7 @@ describe("Given a generalError middleware", () => {
   describe("Given a notFoundError middleware", () => {
     describe("When it receives a request", () => {
       describe("Then it should call its next method", () => {
-        notFoundError(req, res as Response, next);
+        notFoundError(req as Request, res as Response, next);
 
         expect(next).toHaveBeenCalled();
       });
