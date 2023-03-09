@@ -24,27 +24,11 @@ export const loginUser = async (
     const user = await User.findOne({ email: userToFind }).exec();
 
     if (!user) {
-      const error = new CustomError(
-        "Wrong credentials",
-        401,
-        "Wrong credentials"
-      );
-
-      next(error);
-
-      return;
+      throw new CustomError("Wrong credentials", 401, "Wrong credentials");
     }
 
     if (!(await bcrypt.compare(password, user.password))) {
-      const error = new CustomError(
-        "Wrong credentials",
-        401,
-        "Wrong credentials"
-      );
-
-      next(error);
-
-      return;
+      throw new CustomError("Wrong credentials", 401, "Wrong credentials");
     }
 
     const jwtPayload: CustomJwtPayload = {

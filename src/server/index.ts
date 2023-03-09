@@ -3,17 +3,13 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import usersRouter from "./routers/usersRouters/usersRouters.js";
+import {
+  generalError,
+  notFoundError,
+} from "./middlewares/errorMiddlewares/errorMiddlewares.js";
+import options from "./cors.js";
 
 export const app = express();
-
-const allowedOrigins = [
-  process.env.ALLOWED_ORIGINS_LOCAL!,
-  process.env.ALLOWED_ORIGINS_PROD!,
-];
-
-const options: cors.CorsOptions = {
-  origin: allowedOrigins,
-};
 
 app.disable("x-powered-by");
 
@@ -22,3 +18,6 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 app.use("/users", usersRouter);
+
+app.use(notFoundError);
+app.use(generalError);
