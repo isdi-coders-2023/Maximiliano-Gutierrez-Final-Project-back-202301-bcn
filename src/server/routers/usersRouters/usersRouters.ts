@@ -1,4 +1,4 @@
-import Router from "express";
+import { Router } from "express";
 import { validate } from "express-validation";
 import { loginUser } from "../../controllers/usersControllers/usersControllers.js";
 import routes from "../routes.js";
