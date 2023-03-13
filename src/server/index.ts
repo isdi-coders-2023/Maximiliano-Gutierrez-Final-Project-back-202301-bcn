@@ -8,6 +8,7 @@ import {
   notFoundError,
 } from "./middlewares/errorMiddlewares/errorMiddlewares.js";
 import options from "./cors.js";
+import playlistsRouter from "./routers/playlistsRouter/playlistsRouter.js";
 
 export const app = express();
 
@@ -18,6 +19,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 app.use("/users", usersRouter);
+app.use("/playlists", playlistsRouter);
 
 app.use(notFoundError);
 app.use(generalError);
