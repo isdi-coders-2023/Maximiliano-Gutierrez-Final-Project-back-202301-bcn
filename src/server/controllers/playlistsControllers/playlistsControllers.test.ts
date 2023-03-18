@@ -1,10 +1,9 @@
 import { type Request, type Response } from "express";
-import { type Query } from "mongoose";
 import { CustomError } from "../../../CustomError/CustomError";
 import { Playlist } from "../../../database/models/Playlists/Playlists";
 import { type PlaylistData, type PlaylistsData } from "../../../types/types";
-import { CustomRequest } from "../../../types/types";
-import { getPlaylists } from "./playlistsControllers";
+import { type CustomRequest } from "../../../types/types";
+import { getPlaylists, getPlaylistById } from "./playlistsControllers";
 
 const mockPlaylistDriving: PlaylistData = {
   playlistName: "Driving",
@@ -104,5 +103,97 @@ describe("Given a getPlaylists function", () => {
 
       expect(next).toHaveBeenCalledWith(expectedError);
     });
+  });
+});
+
+describe("Given a getPlaylistById controller", () => {
+  describe("When it receives a response", () => {
+    test("Then it should call its status method with 200", async () => {
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockResolvedValue(mockPlaylistDriving),
+      };
+      const req: Partial<CustomRequest> = {
+        params: { playlistId: "jkqfeeñbjfeefqw" },
+      };
+      const next = jest.fn();
+      const expectedCode = 200;
+
+      Playlist.findById = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockReturnValue(mockPlaylistDriving),
+      }));
+
+      await getPlaylistById(req as CustomRequest, res as Response, next);
+
+      expect(res.status).toHaveBeenCalledWith(expectedCode);
+    });
+  });
+
+  describe("When it receives a response", () => {
+    test("Then it should call its json method with the playlist", async () => {
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockResolvedValue(mockPlaylistDriving),
+      };
+      const req: Partial<CustomRequest> = {
+        params: { playlistId: "ljkvgeelbjlenlkeg" },
+      };
+      const next = jest.fn();
+      const expectedPlaylist = mockPlaylistDriving;
+
+      Playlist.findById = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockReturnValue(mockPlaylistDriving),
+      }));
+
+      await getPlaylistById(req as CustomRequest, res as Response, next);
+
+      expect(res.json).toHaveBeenCalledWith({
+        playlist: expectedPlaylist,
+      });
+    });
+  });
+
+  test("Then it should call its next function with the expected error", async () => {
+    const res: Partial<Response> = {};
+    const req: Partial<CustomRequest> = {
+      params: { playlistId: "ljkvgeelbjlenlkeg" },
+    };
+    const next = jest.fn();
+    const expectedError = new CustomError(
+      "Bad request",
+      500,
+      "Could not get playlist"
+    );
+
+    Playlist.findById = jest.fn().mockImplementationOnce(() => ({
+      exec: jest.fn().mockRejectedValue(expectedError),
+    }));
+
+    await getPlaylistById(req as CustomRequest, res as Response, next);
+
+    expect(next).toHaveBeenCalledWith(expectedError);
+  });
+});
+
+describe("When it receives a request with a playlistId and the user is authorized, but there is no playlist in the database", () => {
+  test("Then it should call next with 404 status code and an error", async () => {
+    const customError = new CustomError(
+      "Playist not found",
+      404,
+      "Could not find playlist"
+    );
+    const res: Partial<Response> = {};
+    const req: Partial<CustomRequest> = {
+      params: { playlistId: "ljkvgeelbjlenlkeg" },
+    };
+    const next = jest.fn();
+
+    Playlist.findById = jest.fn().mockImplementationOnce(() => ({
+      exec: jest.fn().mockResolvedValue(undefined),
+    }));
+
+    await getPlaylistById(req as CustomRequest, res as Response, next);
+
+    expect(next).toHaveBeenCalledWith(customError);
   });
 });
