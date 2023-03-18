@@ -20,3 +20,35 @@ export const getPlaylists = async (
     next(customError);
   }
 };
+
+export const getPlaylistById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { playlistId } = req.params;
+    const playlist = await Playlist.findById(playlistId).exec();
+
+    if (!playlist) {
+      const customError = new CustomError(
+        "Playist not found",
+        404,
+        "Could not find playlist"
+      );
+
+      next(customError);
+
+      return;
+    }
+
+    res.status(200).json({ playlist });
+  } catch (error: unknown) {
+    const customError = new CustomError(
+      "Bad request",
+      500,
+      "Could not get playlist"
+    );
+    next(customError);
+  }
+};

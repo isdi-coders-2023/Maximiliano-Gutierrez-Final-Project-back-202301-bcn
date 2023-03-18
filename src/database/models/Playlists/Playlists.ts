@@ -25,6 +25,7 @@ const playlistSchema = new Schema({
         type: Number,
         required: true,
       },
+      postedBy: { type: Schema.Types.ObjectId, ref: "User" },
     },
   ],
 });
