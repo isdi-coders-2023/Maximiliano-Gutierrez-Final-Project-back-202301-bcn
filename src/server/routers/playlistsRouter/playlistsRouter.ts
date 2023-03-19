@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { getPlaylists } from "../../controllers/playlistsControllers/playlistsControllers.js";
+import {
+  getPlaylists,
+  getPlaylistById,
+} from "../../controllers/playlistsControllers/playlistsControllers.js";
 
 const getPlaylistsRoute = "/";
 
