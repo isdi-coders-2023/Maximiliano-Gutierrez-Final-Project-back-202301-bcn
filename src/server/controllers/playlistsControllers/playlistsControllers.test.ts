@@ -3,7 +3,12 @@ import { CustomError } from "../../../CustomError/CustomError";
 import { Playlist } from "../../../database/models/Playlists/Playlists";
 import { type PlaylistData, type PlaylistsData } from "../../../types/types";
 import { type CustomRequest } from "../../../types/types";
-import { getPlaylists, getPlaylistById } from "./playlistsControllers";
+import {
+  getPlaylists,
+  getPlaylistById,
+  deletePlaylistsById,
+  createPlaylist,
+} from "./playlistsControllers";
 
 const mockPlaylistDriving: PlaylistData = {
   playlistName: "Driving",
@@ -195,5 +200,94 @@ describe("When it receives a request with a playlistId and the user is authorize
     await getPlaylistById(req as CustomRequest, res as Response, next);
 
     expect(next).toHaveBeenCalledWith(customError);
+  });
+});
+
+describe("Given a deletePlaylistById controller", () => {
+  describe("When it receives a response", () => {
+    test("Then it should call its status method with 200", async () => {
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockResolvedValue(mockPlaylistDriving),
+      };
+      const req: Partial<CustomRequest> = {
+        params: { playlistId: "71785187847" },
+      };
+      const next = jest.fn();
+      const expectedCode = 200;
+
+      Playlist.findByIdAndDelete = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockReturnValue(mockPlaylistDriving),
+      }));
+
+      await deletePlaylistsById(req as CustomRequest, res as Response, next);
+
+      expect(res.status).toHaveBeenCalledWith(expectedCode);
+    });
+  });
+
+  test("Then it should call its next function with the expected error", async () => {
+    const res: Partial<Response> = {};
+    const req: Partial<CustomRequest> = {
+      params: { playlistId: "71785187847" },
+    };
+    const next = jest.fn();
+    const expectedError = new CustomError(
+      "Bad request",
+      500,
+      "Could not delete playlist"
+    );
+
+    Playlist.findByIdAndDelete = jest.fn().mockImplementationOnce(() => ({
+      exec: jest.fn().mockRejectedValue(expectedError),
+    }));
+
+    await deletePlaylistsById(req as CustomRequest, res as Response, next);
+
+    expect(next).toHaveBeenCalledWith(expectedError);
+  });
+});
+
+describe("Given a createPlaylist controller", () => {
+  describe("When it receives a request with a new playlist", () => {
+    test("Then it should call its status method with 201 and a new playlist", async () => {
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockResolvedValue(mockPlaylistDriving),
+      };
+      const req: Partial<CustomRequest> = {
+        body: { mockPlaylistDriving },
+      };
+      const expectedCode = 201;
+      const next = jest.fn();
+
+      Playlist.create = jest.fn().mockReturnValue(mockPlaylistDriving);
+
+      await createPlaylist(req as CustomRequest, res as Response, next);
+
+      expect(res.status).toHaveBeenCalledWith(expectedCode);
+    });
+  });
+
+  describe("When it receives a request with a new playlist and it's not response", () => {
+    test("Then it should call to next function with customError", async () => {
+      const res: Partial<Response> = {};
+      const req: Partial<CustomRequest> = {
+        body: { mockPlaylistDriving },
+      };
+      const expectedCode = 400;
+      const customError = new CustomError(
+        "Bad request",
+        expectedCode,
+        "Could not create playlist"
+      );
+      const next = jest.fn();
+
+      Playlist.create = jest.fn().mockRejectedValue(new Error());
+
+      await createPlaylist(req as CustomRequest, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(customError);
+    });
   });
 });
