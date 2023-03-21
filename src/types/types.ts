@@ -1,6 +1,8 @@
 import { type Request } from "express";
 import { type JwtPayload } from "jsonwebtoken";
 import type * as core from "express-serve-static-core";
+import { type playlistSchema } from "../database/models/Playlists/Playlists";
+import { type InferSchemaType } from "mongoose";
 
 export interface UserCredentials {
   email: string;
@@ -17,11 +19,14 @@ export interface PlaylistData {
   playlistName: string;
   playlistPhoto: string;
   playlistBpm?: number;
+  postedBy?: string;
   songs: Songs;
 }
 
 export type PlaylistsData = PlaylistData[];
 export type Songs = Song[];
+
+export type PlaylistStrucutre = InferSchemaType<typeof playlistSchema>;
 
 export interface CustomRequest extends Request {
   userId: string;

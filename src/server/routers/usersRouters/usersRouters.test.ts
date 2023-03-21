@@ -7,6 +7,7 @@ import connectDataBase from "../../../database/connectDataBase";
 import User from "../../../database/models/User/User";
 import { type UserCredentials } from "../../../types/types";
 import { app } from "../../index.js";
+import usersRouters from "./usersRouters.js";
 
 let mongodbServer: MongoMemoryServer;
 

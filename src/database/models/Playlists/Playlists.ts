@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 import { type Song } from "../../../types/types";
 
-const playlistSchema = new Schema({
+export const playlistSchema = new Schema({
   playlistName: {
     type: String,
     required: true,
@@ -10,6 +10,8 @@ const playlistSchema = new Schema({
     type: String,
     required: true,
   },
+
+  postedBy: { type: Schema.Types.ObjectId, ref: "User" },
 
   songs: [
     {
@@ -25,7 +27,6 @@ const playlistSchema = new Schema({
         type: Number,
         required: true,
       },
-      postedBy: { type: Schema.Types.ObjectId, ref: "User" },
     },
   ],
 });
