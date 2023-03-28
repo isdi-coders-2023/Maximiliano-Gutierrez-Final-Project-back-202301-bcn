@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import { app } from "../../";
 import connectDataBase from "../../../database/connectDataBase";
 import { Playlist } from "../../../database/models/Playlists/Playlists";
+import { type PlaylistData } from "../../../types/types";
+import jwt from "jsonwebtoken";
 
 let mongodbServer: MongoMemoryServer;
 

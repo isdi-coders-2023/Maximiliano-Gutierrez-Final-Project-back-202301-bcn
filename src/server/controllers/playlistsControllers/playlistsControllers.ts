@@ -26,6 +26,25 @@ export const getPlaylists = async (
   }
 };
 
+export const getUserPlaylists = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const playlists = await Playlist.find({ postedBy: req.userId }).exec();
+
+    res.status(200).json({ playlists });
+  } catch (error) {
+    const customError = new CustomError(
+      "Bad request",
+      400,
+      "Could not get playlists"
+    );
+    next(customError);
+  }
+};
+
 export const createPlaylist = async (
   req: CustomRequest,
   res: Response,
