@@ -1,4 +1,4 @@
-import { type Request, type Response } from "express";
+import { type Request, type Response, NextFunction } from "express";
 import { CustomError } from "../../../CustomError/CustomError";
 import { Playlist } from "../../../database/models/Playlists/Playlists";
 import { type PlaylistData, type PlaylistsData } from "../../../types/types";
@@ -8,6 +8,7 @@ import {
   getPlaylistById,
   deletePlaylistsById,
   createPlaylist,
+  getUserPlaylists,
 } from "./playlistsControllers";
 
 const mockPlaylistDriving: PlaylistData = {
@@ -26,6 +27,72 @@ const mockPlaylistDriving: PlaylistData = {
 const mockPlaylist: PlaylistsData = [mockPlaylistDriving];
 
 beforeEach(() => jest.resetAllMocks());
+
+describe("Given the getUserEvents controller", () => {
+  describe("When it receives a response", () => {
+    test("Then it should call its status method with 200", async () => {
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockResolvedValue(mockPlaylist),
+      };
+      const req: Partial<Request> = {};
+      const next = jest.fn();
+      const expectedStatusCode = 200;
+      req.body = { postedBy: "213i21sdgasgg" };
+
+      Playlist.find = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockReturnValue({ postedBy: "123243afdfasfed" }),
+      }));
+
+      await getUserPlaylists(req as CustomRequest, res as Response, next);
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
+    });
+
+    test("Then it should call its json method", async () => {
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockResolvedValue(mockPlaylist),
+      };
+      const req: Partial<Request> = {};
+      const next = jest.fn();
+      req.params = { postedBy: "213i21309213891jkdk" };
+
+      Playlist.find = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockReturnValue(mockPlaylist),
+      }));
+
+      await getUserPlaylists(req as CustomRequest, res as Response, next);
+
+      expect(res.json).toHaveBeenCalledWith({ playlists: mockPlaylist });
+    });
+  });
+
+  describe("When it receives a bad request", () => {
+    test("Then it should call its next function", async () => {
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockResolvedValue({}),
+      };
+      const req: Partial<Request> = {};
+      const next = jest.fn();
+
+      const expectedError = new CustomError(
+        "Bad request",
+        400,
+        "Could not get playlists"
+      );
+
+      req.body = {};
+
+      Playlist.find = jest.fn().mockReturnValue(undefined);
+
+      await getUserPlaylists(req as CustomRequest, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+});
 
 describe("Given a getPlaylists function", () => {
   describe("When it receives a response", () => {

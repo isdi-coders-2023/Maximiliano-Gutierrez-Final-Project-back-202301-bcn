@@ -20,6 +20,7 @@ export interface PlaylistData {
   playlistPhoto: string;
   playlistBpm?: number;
   postedBy?: string;
+  id?: string;
   songs: Songs;
 }
 
