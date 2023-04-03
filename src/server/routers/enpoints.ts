@@ -5,4 +5,5 @@ export const endpoints = {
   create: "create/",
   id: ":id/",
   login: "/login",
+  filter: "filter/",
 };

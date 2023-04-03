@@ -56,7 +56,6 @@ export const createPlaylist = async (
     const newPlaylist: PlaylistStrucutre = {
       playlistName,
       playlistPhoto,
-      postedBy: new mongoose.Types.ObjectId(userId),
       songs,
     };
 
