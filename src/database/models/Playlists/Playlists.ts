@@ -8,7 +8,6 @@ export const playlistSchema = new Schema({
   },
   playlistPhoto: {
     type: String,
-    required: true,
   },
 
   postedBy: { type: Schema.Types.ObjectId, ref: "User" },

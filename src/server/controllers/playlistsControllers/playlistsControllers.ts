@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { type NextFunction, type Request, type Response } from "express";
 import mongoose from "mongoose";
 import { CustomError } from "../../../CustomError/CustomError.js";
 import { Playlist } from "../../../database/models/Playlists/Playlists.js";
 import {
+  type Song,
   type CustomRequest,
   type PlaylistStrucutre,
 } from "../../../types/types.js";
@@ -50,7 +52,12 @@ export const createPlaylist = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { playlistName, playlistPhoto, songs } = req.body as PlaylistStrucutre;
+  const { playlistName } = req.body as PlaylistStrucutre;
+
+  const playlistPhoto = req.file?.filename;
+
+  const songs = JSON.parse(req.body.songs) as Song[];
+
   const { userId } = req;
   try {
     const newPlaylist: PlaylistStrucutre = {
