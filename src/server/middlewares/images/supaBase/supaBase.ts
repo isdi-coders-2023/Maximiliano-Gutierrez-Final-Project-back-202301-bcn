@@ -6,8 +6,8 @@ import fs from "fs/promises";
 import path from "path";
 
 export const supabase = createClient(
-  "https://uwlssmfekrxedciweqvk.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3bHNzbWZla3J4ZWRjaXdlcXZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Nzg4NzQzMzgsImV4cCI6MTk5NDQ1MDMzOH0.2oiNbAP8h351KgYP6uKHzRAqU7ozfFwS3M1GSZEaZ0w"
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_API_KEY!
 );
 
 const supaBase = async (

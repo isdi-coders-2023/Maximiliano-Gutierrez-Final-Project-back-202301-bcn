@@ -9,6 +9,7 @@ import {
 import auth from "../../middlewares/auth/auth.js";
 import { endpoints } from "../enpoints.js";
 import path from "path";
+import supaBase from "../../middlewares/images/supaBase/supaBase.js";
 
 const storage = multer.diskStorage({
   destination: "uploads/",
@@ -41,6 +42,8 @@ playlistsRouter.delete(
 playlistsRouter.post(
   `${getPlaylistsRoute}${endpoints.create}`,
   auth,
+  upload.single("playlistPhoto"),
+  supaBase,
   createPlaylist
 );
 
