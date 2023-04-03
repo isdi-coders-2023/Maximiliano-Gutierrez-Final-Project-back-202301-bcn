@@ -18,9 +18,8 @@ const storage = multer.diskStorage({
     const suffix = crypto.randomUUID();
 
     const extension = path.extname(file.originalname);
-    const basename = path.basename(file.originalname, extension);
 
-    const filename = `${basename}-${suffix}${extension}`;
+    const filename = `${suffix}${extension}`;
 
     callBack(null, filename);
   },
@@ -44,7 +43,6 @@ playlistsRouter.post(
   `${getPlaylistsRoute}${endpoints.create}`,
   auth,
   upload.single("playlistPhoto"),
-  supaBase,
   createPlaylist
 );
 

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { type NextFunction, type Request, type Response } from "express";
+import { createClient } from "@supabase/supabase-js";
 import mongoose from "mongoose";
 import { CustomError } from "../../../CustomError/CustomError.js";
 import { Playlist } from "../../../database/models/Playlists/Playlists.js";
@@ -8,6 +9,13 @@ import {
   type CustomRequest,
   type PlaylistStrucutre,
 } from "../../../types/types.js";
+import fs from "fs/promises";
+import path from "path";
+
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_API_KEY!
+);
 
 export const getPlaylists = async (
   req: Request,
@@ -15,7 +23,7 @@ export const getPlaylists = async (
   next: NextFunction
 ) => {
   try {
-    const playlists = await Playlist.find().exec();
+    const playlists = await Playlist.find().sort({ _id: -1 }).exec();
 
     res.status(200).json({ playlists });
   } catch (error) {
@@ -56,13 +64,23 @@ export const createPlaylist = async (
 
   const playlistPhoto = req.file?.filename;
 
+  const imagePath = path.join("uploads", playlistPhoto!);
+
+  const image = await fs.readFile(imagePath);
+
+  await supabase.storage.from("images").upload(playlistPhoto!, image);
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from("images").getPublicUrl(playlistPhoto!);
+
   const songs = JSON.parse(req.body.songs) as Song[];
 
   const { userId } = req;
   try {
     const newPlaylist: PlaylistStrucutre = {
       playlistName,
-      playlistPhoto,
+      playlistPhoto: publicUrl,
       songs,
     };
 
