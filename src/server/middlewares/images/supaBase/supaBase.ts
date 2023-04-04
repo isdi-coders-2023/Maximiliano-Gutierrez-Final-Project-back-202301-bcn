@@ -1,14 +1,15 @@
-import "../../../../loadEnvironment.js";
+import {
+  supabaseId,
+  supabaseKey,
+  supabaseUrl,
+} from "../../../../loadEnvironment.js";
 import { createClient } from "@supabase/supabase-js";
 import { type CustomRequest } from "../../../../types/types.js";
 import { type Response, type NextFunction } from "express";
 import fs from "fs/promises";
 import path from "path";
 
-export const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_API_KEY!
-);
+export const supabase = createClient(supabaseUrl!, supabaseKey!);
 
 const supaBase = async (
   req: CustomRequest,
@@ -22,14 +23,14 @@ const supaBase = async (
 
     const image = await fs.readFile(imagePath);
 
-    await supabase.storage.from("images").upload(imageName!, image);
+    await supabase.storage.from(supabaseId!).upload(imageName!, image);
 
     const {
       data: { publicUrl },
-    } = supabase.storage.from("images").getPublicUrl(imageName!);
+    } = supabase.storage.from(supabaseId!).getPublicUrl(imageName!);
 
-    req.body.image = publicUrl;
-    req.body.backupImage = imagePath;
+    req.body.image = imagePath;
+    req.body.backupImage = publicUrl;
 
     next();
   } catch (error) {
