@@ -10,7 +10,6 @@ import auth from "../../middlewares/auth/auth.js";
 import { endpoints } from "../enpoints.js";
 import path from "path";
 import crypto from "crypto";
-import supaBase from "../../middlewares/images/supaBase/supaBase.js";
 
 const storage = multer.diskStorage({
   destination: "uploads/",

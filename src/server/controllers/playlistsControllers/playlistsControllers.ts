@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { type NextFunction, type Request, type Response } from "express";
 import { createClient } from "@supabase/supabase-js";
-import mongoose from "mongoose";
 import { CustomError } from "../../../CustomError/CustomError.js";
 import { Playlist } from "../../../database/models/Playlists/Playlists.js";
 import {
@@ -74,7 +73,6 @@ export const createPlaylist = async (
 
   const songs = JSON.parse(req.body.songs) as Song[];
 
-  const { userId } = req;
   try {
     const newPlaylist: PlaylistStrucutre = {
       playlistName,
