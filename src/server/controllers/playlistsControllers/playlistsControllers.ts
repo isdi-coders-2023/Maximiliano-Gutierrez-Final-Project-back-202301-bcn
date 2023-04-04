@@ -11,11 +11,9 @@ import {
 } from "../../../types/types.js";
 import fs from "fs/promises";
 import path from "path";
+import { supabaseKey, supabaseUrl } from "../../../loadEnvironment.js";
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_API_KEY!
-);
+const supabase = createClient(supabaseUrl!, supabaseKey!);
 
 export const getPlaylists = async (
   req: Request,
