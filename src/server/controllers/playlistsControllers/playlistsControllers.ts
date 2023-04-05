@@ -109,8 +109,8 @@ export const deletePlaylistsById = async (
   } catch (error) {
     const customError = new CustomError(
       "Bad request",
-      400,
-      "Could not retrieve playlist"
+      500,
+      "The playlist couldn't be deleted"
     );
     next(customError);
   }
