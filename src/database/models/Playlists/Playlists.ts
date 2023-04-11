@@ -12,6 +12,11 @@ export const playlistSchema = new Schema({
 
   postedBy: { type: Schema.Types.ObjectId, ref: "User" },
 
+  isCreatedByUser: {
+    type: Boolean,
+    default: false,
+  },
+
   songs: [
     {
       trackName: {
