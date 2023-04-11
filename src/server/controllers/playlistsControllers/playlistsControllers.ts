@@ -78,6 +78,7 @@ export const createPlaylist = async (
       playlistName,
       playlistPhoto: publicUrl,
       songs,
+      isCreatedByUser: true,
     };
 
     const createdPlaylist = await Playlist.create(newPlaylist);
@@ -102,7 +103,6 @@ export const deletePlaylistsById = async (
   try {
     const playlist = await Playlist.findByIdAndDelete({
       _id: playlistId,
-      postedBy: req.userId,
     }).exec();
 
     res.status(200).json({ playlist });
