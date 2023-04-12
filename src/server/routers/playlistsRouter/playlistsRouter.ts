@@ -11,9 +11,6 @@ import { endpoints } from "../enpoints.js";
 import path from "path";
 import crypto from "crypto";
 import { validate } from "express-validation";
-import { playlistSchema } from "../../../database/models/Playlists/Playlists.js";
-import optimizing from "../../middlewares/images/optimizing/optimizing.js";
-import supaBase from "../../middlewares/images/supaBase/supaBase.js";
 
 const storage = multer.diskStorage({
   destination: "uploads/",
@@ -29,7 +26,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ ...storage, limits: { fileSize: 8000000 } });
+const upload = multer({ storage, limits: { fileSize: 8000000 } });
 
 const getPlaylistsRoute = "/";
 
@@ -47,8 +44,6 @@ playlistsRouter.post(
   `${getPlaylistsRoute}${endpoints.create}`,
   auth,
   upload.single("playlistPhoto"),
-  optimizing,
-  supaBase,
   createPlaylist
 );
 
