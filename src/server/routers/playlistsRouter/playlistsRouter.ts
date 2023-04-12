@@ -34,7 +34,7 @@ const playlistsRouter = Router();
 playlistsRouter.get(getPlaylistsRoute, getPlaylists);
 
 playlistsRouter.delete(
-  `${endpoints.delete}${endpoints.details}`,
+  `${getPlaylistsRoute}${endpoints.delete}`,
   auth,
   deletePlaylistsById
 );
