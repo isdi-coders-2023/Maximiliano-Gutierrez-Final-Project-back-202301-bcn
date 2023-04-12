@@ -4,7 +4,7 @@ const playlistsSchema = {
   body: Joi.object({
     playlistName: Joi.string().required(),
     playlistPhoto: Joi.string().required(),
-    postedBy: Joi.boolean(), // AGREGADO para probar delete
+    postedBy: Joi.string(), // AGREGADO para probar delete
     songs: Joi.array().items(
       Joi.object({})
         .keys({

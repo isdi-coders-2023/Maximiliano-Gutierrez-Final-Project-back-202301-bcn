@@ -1,7 +1,7 @@
 export const endpoints = {
   playlist: "/playlists/",
   details: ":id/",
-  delete: "delete/",
+  delete: "delete/:id",
   create: "create/",
   id: ":id/",
   login: "/login",
