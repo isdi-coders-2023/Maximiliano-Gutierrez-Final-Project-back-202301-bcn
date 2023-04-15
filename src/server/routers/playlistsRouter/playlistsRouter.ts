@@ -53,7 +53,7 @@ playlistsRouter.get(
   getPlaylistById
 );
 
-playlistsRouter.post(
+playlistsRouter.patch(
   `${getPlaylistsRoute}${endpoints.edit}`,
   auth,
   upload.single("playlistPhoto"),
