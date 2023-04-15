@@ -5,6 +5,7 @@ import {
   getPlaylistById,
   deletePlaylistsById,
   createPlaylist,
+  updatePlaylist,
 } from "../../controllers/playlistsControllers/playlistsControllers.js";
 import auth from "../../middlewares/auth/auth.js";
 import { endpoints } from "../enpoints.js";
@@ -50,6 +51,13 @@ playlistsRouter.post(
 playlistsRouter.get(
   `${getPlaylistsRoute}${endpoints.details}`,
   getPlaylistById
+);
+
+playlistsRouter.post(
+  `${getPlaylistsRoute}${endpoints.edit}`,
+  auth,
+  upload.single("playlistPhoto"),
+  updatePlaylist
 );
 
 export default playlistsRouter;
