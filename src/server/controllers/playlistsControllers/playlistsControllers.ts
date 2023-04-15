@@ -11,6 +11,7 @@ import {
 import fs from "fs/promises";
 import path from "path";
 import { supabaseKey, supabaseUrl } from "../../../loadEnvironment.js";
+import { validationResult } from "express-validator";
 
 const supabase = createClient(supabaseUrl!, supabaseKey!);
 
@@ -144,6 +145,47 @@ export const getPlaylistById = async (
       500,
       "Could not get playlist"
     );
+    next(customError);
+  }
+};
+
+export const updatePlaylist = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const { playlistName, playlistPhoto, songs } = req.body as PlaylistStrucutre;
+
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    console.log("Updating playlist with ID:", id); // Prueba
+    console.log("New playlist data:", { playlistName, playlistPhoto, songs }); // Prueba
+
+    const playlist = await Playlist.findByIdAndUpdate(
+      id,
+      { playlistName, playlistPhoto, songs },
+      { new: true }
+    );
+
+    if (!playlist) {
+      return res.status(404).json({ error: "Playlist not found" });
+    }
+
+    console.log("Updated playlist:", playlist); // Prueba
+
+    res.status(200).json({ playlist });
+  } catch (error: unknown) {
+    const customError = new CustomError(
+      (error as Error).message,
+      500,
+      "Internal server error"
+    );
+
     next(customError);
   }
 };
