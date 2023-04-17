@@ -1,4 +1,4 @@
-import { type Request, type Response, NextFunction } from "express";
+import { type Request, type Response, type NextFunction } from "express";
 import { CustomError } from "../../../CustomError/CustomError";
 import { Playlist } from "../../../database/models/Playlists/Playlists";
 import { type PlaylistData, type PlaylistsData } from "../../../types/types";
@@ -10,6 +10,9 @@ import {
   createPlaylist,
   getUserPlaylists,
 } from "./playlistsControllers";
+import { Readable } from "stream";
+import fs from "fs";
+import { supabase } from "../../middlewares/images/supaBase/supaBase";
 
 const mockPlaylistDriving: PlaylistData = {
   playlistName: "Driving",
@@ -272,5 +275,88 @@ describe("Given a deletePlaylistById controller", () => {
     await deletePlaylistsById(req as CustomRequest, res as Response, next);
 
     expect(next).toHaveBeenCalledWith(expectedError);
+  });
+});
+
+describe("Given a createPlaylist controller", () => {
+  const tempFilePath = "uploads/picture.jpg";
+
+  beforeAll(() => {
+    if (!fs.existsSync("uploads")) {
+      fs.mkdirSync("uploads");
+    }
+
+    fs.writeFileSync(tempFilePath, "");
+  });
+
+  afterAll(() => {
+    fs.unlinkSync(tempFilePath);
+  });
+  describe("When it receives a response", () => {
+    test("Then it should call its status method with 201", async () => {
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockResolvedValue(mockPlaylistDriving),
+      };
+      const req: Partial<CustomRequest> = {
+        body: {
+          playlistName: "New Playlist",
+          songs: JSON.stringify(mockPlaylistDriving.songs),
+        },
+        file: {
+          filename: "picture.jpg",
+          fieldname: "image",
+          originalname: "picture.jpg",
+          encoding: "7bit",
+          mimetype: "image/jpeg",
+          size: 1000,
+          destination: "uploads/",
+          path: "uploads/picture.jpg",
+          buffer: Buffer.from(""),
+          stream: Readable.from(""),
+        },
+      };
+      const next = jest.fn();
+      const expectedStatusCode = 201;
+
+      Playlist.create = jest.fn().mockReturnValue(mockPlaylistDriving);
+
+      await createPlaylist(req as CustomRequest, res as Response, next);
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
+    });
+
+    test("Then it should call its json method with the created playlist", async () => {
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockResolvedValue(mockPlaylistDriving),
+      };
+      const req: Partial<CustomRequest> = {
+        body: {
+          playlistName: "New Playlist",
+          songs: JSON.stringify(mockPlaylistDriving.songs),
+        },
+        file: {
+          filename: "picture.jpg",
+          fieldname: "image",
+          originalname: "picture.jpg",
+          encoding: "7bit",
+          mimetype: "image/jpeg",
+          size: 1000,
+          destination: "uploads/",
+          path: "uploads/picture.jpg",
+          buffer: Buffer.from(""),
+          stream: Readable.from(""),
+        },
+      };
+      const next = jest.fn();
+      const expectedPlaylist = mockPlaylistDriving;
+
+      Playlist.create = jest.fn().mockReturnValue(mockPlaylistDriving);
+
+      await createPlaylist(req as CustomRequest, res as Response, next);
+
+      expect(res.json).toHaveBeenCalledWith({ playlist: expectedPlaylist });
+    });
   });
 });

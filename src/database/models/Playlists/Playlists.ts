@@ -35,13 +35,4 @@ export const playlistSchema = new Schema({
   ],
 });
 
-playlistSchema.virtual("playlistBpm").get(function () {
-  const sum: number = this.songs.reduce(
-    (bpm: number, song: Song) => bpm + song.bpmTrack,
-    0
-  );
-
-  return Math.floor(sum / this.songs.length);
-});
-
 export const Playlist = model("Playlist", playlistSchema, "playlists");
