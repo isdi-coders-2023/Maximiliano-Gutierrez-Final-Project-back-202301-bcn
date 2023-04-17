@@ -185,7 +185,7 @@ export const updatePlaylist = async (
 
     const playlist = await Playlist.findByIdAndUpdate(id, updatedData, {
       new: true,
-    });
+    }).exec();
 
     if (!playlist) {
       return res.status(404).json({ error: "Playlist not found" });
