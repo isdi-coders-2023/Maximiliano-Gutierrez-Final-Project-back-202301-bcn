@@ -46,3 +46,9 @@ export interface CustomRequestPlus<
 > extends Request<P, ResBody, ReqBody> {
   userId: string;
 }
+
+export interface UpdatedPlaylistData
+  extends Omit<PlaylistStrucutre, "isCreatedByUser"> {
+  isCreatedByUser?: boolean;
+  playlistPhoto?: string;
+}
