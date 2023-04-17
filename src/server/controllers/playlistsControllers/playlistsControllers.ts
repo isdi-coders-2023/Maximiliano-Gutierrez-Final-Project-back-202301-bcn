@@ -7,6 +7,7 @@ import {
   type Song,
   type CustomRequest,
   type PlaylistStrucutre,
+  type UpdatedPlaylistData,
 } from "../../../types/types.js";
 import fs from "fs/promises";
 import path from "path";
@@ -155,7 +156,21 @@ export const updatePlaylist = async (
   next: NextFunction
 ) => {
   const { id } = req.params;
-  const { playlistName, playlistPhoto, songs } = req.body as PlaylistStrucutre;
+  const { playlistName, songs } = req.body as PlaylistStrucutre;
+
+  let playlistPhoto;
+  if (req.file) {
+    const imagePath = path.join("uploads", req.file.filename);
+    const image = await fs.readFile(imagePath);
+
+    await supabase.storage.from("images").upload(req.file.filename, image);
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("images").getPublicUrl(req.file.filename);
+
+    playlistPhoto = publicUrl;
+  }
 
   try {
     const errors = validationResult(req);
@@ -163,20 +178,18 @@ export const updatePlaylist = async (
       return res.status(400).json({ errors: errors.array() });
     }
 
-    console.log("Updating playlist with ID:", id); // Prueba
-    console.log("New playlist data:", { playlistName, playlistPhoto, songs }); // Prueba
+    const updatedData: UpdatedPlaylistData = { playlistName, songs };
+    if (playlistPhoto) {
+      updatedData.playlistPhoto = playlistPhoto;
+    }
 
-    const playlist = await Playlist.findByIdAndUpdate(
-      id,
-      { playlistName, playlistPhoto, songs },
-      { new: true }
-    );
+    const playlist = await Playlist.findByIdAndUpdate(id, updatedData, {
+      new: true,
+    });
 
     if (!playlist) {
       return res.status(404).json({ error: "Playlist not found" });
     }
-
-    console.log("Updated playlist:", playlist); // Prueba
 
     res.status(200).json({ playlist });
   } catch (error: unknown) {

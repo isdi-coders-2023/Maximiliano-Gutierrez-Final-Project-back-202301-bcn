@@ -11,7 +11,6 @@ import auth from "../../middlewares/auth/auth.js";
 import { endpoints } from "../enpoints.js";
 import path from "path";
 import crypto from "crypto";
-import { validate } from "express-validation";
 
 const storage = multer.diskStorage({
   destination: "uploads/",
@@ -27,7 +26,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage, limits: { fileSize: 8000000 } });
+const upload = multer({ storage, limits: { fileSize: 2000000 } });
 
 const getPlaylistsRoute = "/";
 
