@@ -11,7 +11,6 @@ import options from "./cors.js";
 import playlistsRouter from "./routers/playlistsRouter/playlistsRouter.js";
 
 export const app = express();
-
 app.disable("x-powered-by");
 
 app.use(cors(options));

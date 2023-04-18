@@ -1,5 +1,4 @@
 import { model, Schema } from "mongoose";
-import { type Song } from "../../../types/types";
 
 export const playlistSchema = new Schema({
   playlistName: {
