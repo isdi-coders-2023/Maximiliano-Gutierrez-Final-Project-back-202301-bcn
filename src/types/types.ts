@@ -18,7 +18,7 @@ export interface Song {
 export interface PlaylistData {
   isCreatedByUser?: boolean;
   playlistName: string;
-  playlistPhoto: string;
+  playlistPhoto: string | File;
   playlistBpm?: number;
   postedBy?: string;
   id?: string;
