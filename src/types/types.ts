@@ -9,6 +9,12 @@ export interface UserCredentials {
   password: string;
 }
 
+export interface UserRegisterCredentials {
+  email: string;
+  password: string;
+  name: string;
+}
+
 export interface Song {
   trackName: string;
   artistName: string;

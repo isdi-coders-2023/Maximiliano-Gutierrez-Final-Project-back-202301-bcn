@@ -7,4 +7,5 @@ export const endpoints = {
   login: "/login",
   filter: "filter/",
   edit: "edit/:id",
+  register: "/register",
 };
