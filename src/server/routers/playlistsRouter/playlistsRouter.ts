@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage, limits: { fileSize: 2000000 } });
+const upload = multer({ storage, limits: { fileSize: 8000000 } });
 
 const getPlaylistsRoute = "/";
 
