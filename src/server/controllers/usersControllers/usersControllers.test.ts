@@ -1,11 +1,14 @@
 import { type NextFunction, type Request, type Response } from "express";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import User from "../../../database/models/User/User";
-import { loginUser } from "./usersControllers";
-import { CustomError } from "../../../CustomError/CustomError";
 import mongoose from "mongoose";
-import { type UserCredentials } from "../../../types/types";
+import User from "../../../database/models/User/User";
+import {
+  type UserCredentials,
+  type UserRegisterCredentials,
+} from "../../../types/types";
+import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { loginUser, registerUser } from "./usersControllers";
+import { CustomError } from "../../../CustomError/CustomError";
 
 const res: Partial<Response> = {
   status: jest.fn().mockReturnThis(),
@@ -65,7 +68,7 @@ describe("Given a loginUser controller", () => {
         }),
       }));
 
-      bcrypt.compare = jest.fn().mockResolvedValue(true);
+      bcryptjs.compare = jest.fn().mockResolvedValue(true);
       jwt.sign = jest.fn().mockReturnValue("985oig29803");
 
       await loginUser(
@@ -99,13 +102,98 @@ describe("Given a loginUser controller", () => {
         }),
       }));
 
-      bcrypt.compare = jest.fn().mockResolvedValue(false);
+      bcryptjs.compare = jest.fn().mockResolvedValue(false);
 
       await loginUser(
         req as Request<
           Record<string, unknown>,
           Record<string, unknown>,
           UserCredentials
+        >,
+        res as Response,
+        next
+      );
+
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+
+  describe("When the data base rejects the request and responds with an error", () => {
+    test("Then it should call its next method", async () => {
+      const error = new Error("Fatal error");
+
+      User.findOne = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockRejectedValue(error),
+      }));
+
+      await loginUser(
+        req as Request<
+          Record<string, unknown>,
+          Record<string, unknown>,
+          UserCredentials
+        >,
+        res as Response,
+        next
+      );
+
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+});
+
+describe("Given a registerUser controller", () => {
+  describe("When it receives a request to register the user correctly", () => {
+    test("Then it should call its status method and its json method with the message 'The user has been created'", async () => {
+      const mockUser: UserRegisterCredentials = {
+        email: "leomatiolli@aol.com",
+        password: "12345678",
+        name: "balcarce",
+      };
+
+      const expectedMessage = { message: "The user has been created" };
+      const expectedStatusCode = 201;
+
+      req.body = mockUser;
+      bcryptjs.hash = jest.fn().mockResolvedValue("batatamerlo");
+      User.create = jest.fn().mockResolvedValue(mockUser);
+
+      await registerUser(
+        req as Request<
+          Record<string, unknown>,
+          Record<string, unknown>,
+          UserRegisterCredentials
+        >,
+        res as Response,
+        next
+      );
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
+      expect(res.json).toHaveBeenCalledWith(expectedMessage);
+    });
+  });
+
+  describe("When it receives a user with a invalid length password", () => {
+    test("Then it should show an error with the text 'The user couldn't be created'", async () => {
+      const mockUser: UserRegisterCredentials = {
+        email: "leomatiolli@aol.com",
+        password: "12345678",
+        name: "balcarce",
+      };
+
+      const expectedError = new CustomError(
+        "The user couldn't be created.",
+        409,
+        "There was a problem creating the user."
+      );
+
+      req.body = mockUser;
+      User.create = jest.fn().mockRejectedValue(undefined);
+
+      await registerUser(
+        req as Request<
+          Record<string, unknown>,
+          Record<string, unknown>,
+          UserRegisterCredentials
         >,
         res as Response,
         next
