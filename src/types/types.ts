@@ -52,3 +52,11 @@ export interface UpdatedPlaylistData
   isCreatedByUser?: boolean;
   playlistPhoto?: string;
 }
+
+export interface PlaylistCreateResult {
+  id: string;
+  playlistName: string;
+  playlistPhoto: string;
+  songs: Song[];
+  isCreatedByUser: boolean;
+}
