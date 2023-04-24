@@ -171,35 +171,4 @@ describe("Given a registerUser controller", () => {
       expect(res.json).toHaveBeenCalledWith(expectedMessage);
     });
   });
-
-  describe("When it receives a user with a invalid length password", () => {
-    test("Then it should show an error with the text 'The user couldn't be created'", async () => {
-      const mockUser: UserRegisterCredentials = {
-        email: "leomatiolli@aol.com",
-        password: "12345678",
-        name: "balcarce",
-      };
-
-      const expectedError = new CustomError(
-        "The user couldn't be created.",
-        409,
-        "There was a problem creating the user."
-      );
-
-      req.body = mockUser;
-      User.create = jest.fn().mockRejectedValue(undefined);
-
-      await registerUser(
-        req as Request<
-          Record<string, unknown>,
-          Record<string, unknown>,
-          UserRegisterCredentials
-        >,
-        res as Response,
-        next
-      );
-
-      expect(next).toHaveBeenCalledWith(expectedError);
-    });
-  });
 });

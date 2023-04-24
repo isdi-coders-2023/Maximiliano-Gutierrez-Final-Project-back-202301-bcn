@@ -12,7 +12,6 @@ import {
 } from "./playlistsControllers";
 import { Readable } from "stream";
 import fs from "fs";
-import { supabase } from "../../middlewares/images/supaBase/supaBase";
 
 const mockPlaylistDriving: PlaylistData = {
   playlistName: "Driving",
