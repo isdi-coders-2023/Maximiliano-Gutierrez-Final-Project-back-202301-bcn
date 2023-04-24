@@ -1,6 +1,6 @@
 import { type NextFunction, type Request, type Response } from "express";
 import mongoose from "mongoose";
-import User from "../../../database/models/User/User";
+import { User } from "../../../database/models/User/User";
 import {
   type UserCredentials,
   type UserRegisterCredentials,

@@ -7,7 +7,7 @@ import {
   type CustomJwtPayload,
   type UserRegisterCredentials,
 } from "../../../types/types.js";
-import User from "../../../database/models/User/User.js";
+import { User } from "../../../database/models/User/User.js";
 
 const requestSucceedStatus = 200;
 const hashingPasswordLength = 8;
