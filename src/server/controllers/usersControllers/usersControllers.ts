@@ -73,12 +73,34 @@ export const registerUser = async (
 
     res.status(201).json({ message: "The user has been created" });
   } catch (error) {
-    const customError = new CustomError(
-      "The user couldn't be created.",
-      409,
-      "There was a problem creating the user."
-    );
-
-    next(customError);
+    if (error.code && error.code === 11000) {
+      if (error.keyPattern.email) {
+        next(
+          new CustomError(
+            "The email is already in use.",
+            409,
+            "Email already in use."
+          )
+        );
+      } else if (error.keyPattern.name) {
+        next(
+          new CustomError(
+            "The name is already in use.",
+            409,
+            "Name already in use."
+          )
+        );
+      } else {
+        next(
+          new CustomError(
+            "The user couldn't be created.",
+            409,
+            "There was a problem creating the user."
+          )
+        );
+      }
+    } else {
+      next(error);
+    }
   }
 };
