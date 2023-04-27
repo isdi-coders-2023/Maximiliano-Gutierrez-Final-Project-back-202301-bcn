@@ -54,4 +54,4 @@ Open your browser and go to http://localhost:3000 to access the app.
 
 ## Author
 
-This project was created by Maximiliano Gutierrez, a techno music enthusiast and a student at the ISDI Coders bootcamp in Barcelona. Thank you for visiting, and enjoy the techno tunes!
+This project was created by Maximiliano Gutierrez, a techno music enthusiast and a student at the ISDI Coders bootcamp in Barcelona. Thank you for visiting, and enjoy the techno tunes!!
