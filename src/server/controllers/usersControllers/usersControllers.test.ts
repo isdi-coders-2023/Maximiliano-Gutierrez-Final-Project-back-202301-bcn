@@ -170,5 +170,36 @@ describe("Given a registerUser controller", () => {
       expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
       expect(res.json).toHaveBeenCalledWith(expectedMessage);
     });
+
+    test("Then register user success", async () => {
+      const req = {
+        body: {
+          email: "test@test.com",
+          name: "Test User",
+          password: "password123",
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+      const next = jest.fn();
+
+      await registerUser(
+        req as Request<
+          Record<string, unknown>,
+          Record<string, unknown>,
+          UserRegisterCredentials
+        >,
+        res as unknown as Response,
+        next
+      );
+
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "The user has been created",
+      });
+      expect(next).not.toHaveBeenCalled();
+    });
   });
 });
